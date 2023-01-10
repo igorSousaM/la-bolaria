@@ -1,5 +1,16 @@
 import { Router } from "express";
+import { postOrder } from "../../controller/orders.controller/orders.controller.js";
+import { postOrderMiddleware } from "../../middleware/orders.middleware/orders.middleware.js";
+import { validateSchema } from "../../middleware/schemaValidation.js";
+import { orderSchema } from "../../models/order.models/order.models.js";
 
-const orderRouter = Router()
+const orderRouter = Router();
 
-export {orderRouter}
+orderRouter.post(
+  "/order",
+  validateSchema(orderSchema),
+  postOrderMiddleware,
+  postOrder
+);
+
+export { orderRouter };
