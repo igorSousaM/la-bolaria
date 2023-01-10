@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { clientsRouter } from "./clients.routes/clients.routes";
-import { orderRouter } from "./orders.routes/orders.routes";
+import { cakeRouter } from "./cakes.routes/cakes.routes.js";
+import { clientsRouter } from "./clients.routes/clients.routes.js";
+import { orderRouter } from "./orders.routes/orders.routes.js";
 
 const router = Router()
 
 router.use(clientsRouter)
 router.use(orderRouter)
-router.use(clientsRouter)
+router.use(cakeRouter)
 
 export {router}
