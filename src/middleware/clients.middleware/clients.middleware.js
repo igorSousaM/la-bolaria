@@ -10,7 +10,7 @@ export async function postClientsMiddleware(req, res, next) {
     );
 
     if(clientConsult.rows.length !== 0){
-        res.status(409).send("esse cliente ja existe")
+        return res.status(409).send("esse cliente ja existe")
     }
 
  
