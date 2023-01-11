@@ -34,3 +34,20 @@ export async function postOrderMiddleware(req, res, next) {
 
   next();
 }
+
+export async function getOrderByIdMiddleware(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const orderConsult =  await connection.query("SELECT * FROM orders WHERE id=$1;", [id]);
+    
+    if(orderConsult.rows.length === 0){
+        return res.status(404).send("esse pedido nao existe")
+    }
+} catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+
+  next();
+}
