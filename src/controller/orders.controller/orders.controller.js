@@ -15,7 +15,7 @@ export async function postOrder(req, res) {
   }
 }
 
-export async function getOrder(req, res) {
+export async function getOrders(req, res) {
   try {
     const ordersConsult = await connection.query(
       `SELECT 

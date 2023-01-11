@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  getOrder,
+  getOrders,
   getOrderById,
   postOrder,
 } from "../../controller/orders.controller/orders.controller.js";
@@ -17,7 +17,7 @@ orderRouter.post(
   postOrder
 );
 
-orderRouter.get("/order", getOrder);
+orderRouter.get("/order", getOrders);
 orderRouter.get("/order/:id",getOrderByIdMiddleware,getOrderById)
 
 export { orderRouter };
