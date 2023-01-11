@@ -45,3 +45,4 @@ export async function getFullOrderById(id) {
 
   return orderConsult.rows[0];
 }
+

@@ -1,4 +1,5 @@
-import { connection } from "../../database/db.js";
+import dayjs from "dayjs";
+
 import {
   getFullOrderById,
   getFullOrders,
@@ -20,7 +21,9 @@ export async function postOrderController(req, res) {
 export async function getOrdersController(req, res) {
   //add query string
 
+
   try {
+    
     const ordersConsult = await getFullOrders();
 
     if (ordersConsult.length === 0) {
@@ -62,14 +65,14 @@ function organizeOrder(obj) {
     cake: {
       id: obj.cakeId,
       name: obj.cakeName,
-      price: obj.price,
+      price: obj.price/100,
       description: obj.description,
       image: obj.image,
     },
     orderId: obj.orderId,
-    createdAt: obj.createdAt,
+    createdAt: dayjs(obj.createdAt).format('YYYY-MM-DD HH:mm'),
     quantity: obj.quantity,
-    totalPrice: obj.totalPrice,
+    totalPrice: obj.totalPrice / 100,
   };
 
   return body;
