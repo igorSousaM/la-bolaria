@@ -1,30 +1,25 @@
-import { connection } from "../../database/db.js";
+import { getCakeById } from "../../repositories/cake.repository.js";
+import { getClientById } from "../../repositories/clients.repostory.js";
+import { getOrderById } from "../../repositories/orders.repository.js";
 
 export async function postOrderMiddleware(req, res, next) {
   const { cakeId, clientId, quantity, totalPrice } = req.body;
 
   try {
-    const cakeConsult = await connection.query(
-      "SELECT * FROM cakes WHERE id=$1;",
-      [cakeId]
-    );
-
-    if (cakeConsult.rows.length === 0) {
+    const cakeConsult = await getCakeById(cakeId);
+    if (!cakeConsult) {
       return res.status(404).send("esse bolo nao existe");
     }
 
-    const clientConsult = await connection.query(
-      "SELECT * FROM clients WHERE id=$1;",
-      [clientId]
-    );
+    const clientConsult = await getClientById(clientId);
 
-    if (clientConsult.rows.length === 0) {
-      return res.status(404).send("esse cliente nao existe");
+    if (!clientConsult) {
+      return res.status(404).send("cliente nao existe");
     }
 
-    if (totalPrice !== quantity * cakeConsult.rows[0].price) {
+    if (totalPrice !== quantity * cakeConsult.price) {
       return res
-        .status(409)
+        .status(400)
         .send("preco total nao condiz com a qtd ou preço do bolos");
     }
   } catch (err) {
@@ -39,12 +34,12 @@ export async function getOrderByIdMiddleware(req, res, next) {
   const { id } = req.params;
 
   try {
-    const orderConsult =  await connection.query("SELECT * FROM orders WHERE id=$1;", [id]);
-    
-    if(orderConsult.rows.length === 0){
-        return res.status(404).send("esse pedido nao existe")
+    const orderConsult = await getOrderById(id);
+
+    if (!orderConsult) {
+      return res.status(404).send("esse pedido nao existe");
     }
-} catch (err) {
+  } catch (err) {
     console.log(err);
     res.sendStatus(500);
   }

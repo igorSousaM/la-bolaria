@@ -1,15 +1,15 @@
-import { connection } from "../../database/db.js";
+import {
+  getClient,
+  getClientById,
+} from "../../repositories/clients.repostory.js";
 
 export async function postClientsMiddleware(req, res, next) {
   const { name, address, phone } = req.body;
 
   try {
-    const clientConsult = await connection.query(
-      "SELECT * FROM clients WHERE name = $1 AND address = $2 AND phone = $3;",
-      [name, address, phone]
-    );
+    const clientConsult = await getClient(name, address, phone);
 
-    if (clientConsult.rows.length !== 0) {
+    if (clientConsult) {
       return res.status(409).send("esse cliente ja existe");
     }
   } catch (err) {
@@ -24,13 +24,10 @@ export async function getOrdersByClientMiddleware(req, res, next) {
   const { id } = req.params;
 
   try {
-    const clientConsult = await connection.query(
-      "SELECT * FROM clients WHERE id=$1",
-      [id]
-    );
+    const clientConsult = await getClientById(id);
 
-    if(clientConsult.rows.length === 0){
-      res.status(404).send("cliente nao existe")
+    if (!clientConsult) {
+      return res.status(404).send("cliente nao existe");
     }
   } catch (err) {
     console.log(err);

@@ -1,6 +1,12 @@
 import { Router } from "express";
-import { getOrdersByClient, postClients } from "../../controller/clients.controller/clients.controller.js";
-import { getOrdersByClientMiddleware, postClientsMiddleware } from "../../middleware/clients.middleware/clients.middleware.js";
+import {
+  getOrdersByClientController,
+  postClientsController,
+} from "../../controller/clients.controller/clients.controller.js";
+import {
+  getOrdersByClientMiddleware,
+  postClientsMiddleware,
+} from "../../middleware/clients.middleware/clients.middleware.js";
 import { validateSchema } from "../../middleware/schemaValidation.js";
 import { clientsSchema } from "../../models/clients.models/clients.models.js";
 
@@ -10,9 +16,13 @@ clientsRouter.post(
   "/clients",
   validateSchema(clientsSchema),
   postClientsMiddleware,
-  postClients
+  postClientsController
 );
 
-clientsRouter.get("/clients/:id/orders",getOrdersByClientMiddleware, getOrdersByClient)
+clientsRouter.get(
+  "/clients/:id/orders",
+  getOrdersByClientMiddleware,
+  getOrdersByClientController
+);
 
 export { clientsRouter };

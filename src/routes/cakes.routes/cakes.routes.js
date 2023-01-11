@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postCakes } from "../../controller/cakes.controller/cakes.controller.js";
+import { postCakesController } from "../../controller/cakes.controller/cakes.controller.js";
 import { postCakesMiddleware } from "../../middleware/cakes.middleware/cakes.middleware.js";
 import { validateSchema } from "../../middleware/schemaValidation.js";
 import { cakesSchema } from "../../models/cakes.models/cakes.model.js";
@@ -10,7 +10,7 @@ cakeRouter.post(
   "/cakes",
   validateSchema(cakesSchema),
   postCakesMiddleware,
-  postCakes
+  postCakesController
 );
 
 export { cakeRouter };

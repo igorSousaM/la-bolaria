@@ -1,0 +1,28 @@
+CREATE TABLE "cakes" (
+	"id" SERIAL PRIMARY KEY NOT NULL,
+	"name" VARCHAR(50) NOT NULL UNIQUE,
+	"price" INTEGER NOT NULL,
+	"image" VARCHAR(255) NOT NULL,
+	"description" TEXT NOT NULL
+);
+
+
+
+CREATE TABLE "clients" (
+	"id" SERIAL PRIMARY KEY NOT NULL,
+	"name" VARCHAR(50) NOT NULL,
+	"address" VARCHAR(255) NOT NULL,
+	"phone" VARCHAR(11) NOT NULL
+);
+
+
+
+CREATE TABLE "orders" (
+	"id" SERIAL PRIMARY KEY NOT NULL,
+	"cakeId" INTEGER NOT NULL REFERENCES "cakes"("id"),
+	"clientId" INTEGER NOT NULL REFERENCES "clients"("id"),
+	"quantity" INTEGER NOT NULL,
+	"createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+	"totalPrice" FLOAT NOT NULL
+);
+

@@ -1,13 +1,11 @@
 import { connection } from "../../database/db.js";
+import { postClient } from "../../repositories/clients.repostory.js";
 
-export async function postClients(req, res) {
+export async function postClientsController(req, res) {
   const { name, address, phone } = req.body;
 
   try {
-    await connection.query(
-      "INSERT INTO clients (name, address, phone) VALUES ($1, $2, $3);",
-      [name, address, phone]
-    );
+    await postClient(name, address, phone);
     res.status(201).send("inserido");
   } catch (err) {
     console.log(err);
@@ -15,17 +13,19 @@ export async function postClients(req, res) {
   }
 }
 
-export async function getOrdersByClient(req, res) {
+export async function getOrdersByClientController(req, res) {
   const { id } = req.params;
 
   try {
-    const orderConsult = await connection.query(`SELECT 
+    const orderConsult = await connection.query(
+      `SELECT 
     o.id as "orderId", o.quantity, o."createdAt", o."totalPrice",c.name as "cakeName" 
     FROM orders o JOIN cakes c ON c.id=o."cakeId"
-    WHERE o."clientId" = $1;`,[id]);;
+    WHERE o."clientId" = $1;`,
+      [id]
+    );
 
-    res.status(200).send(orderConsult.rows)
-
+    res.status(200).send(orderConsult.rows);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

@@ -1,10 +1,13 @@
 import { Router } from "express";
 import {
-  getOrders,
-  getOrderById,
-  postOrder,
+  getOrdersController,
+  getOrderByIdController,
+  postOrderController,
 } from "../../controller/orders.controller/orders.controller.js";
-import { getOrderByIdMiddleware, postOrderMiddleware } from "../../middleware/orders.middleware/orders.middleware.js";
+import {
+  getOrderByIdMiddleware,
+  postOrderMiddleware,
+} from "../../middleware/orders.middleware/orders.middleware.js";
 import { validateSchema } from "../../middleware/schemaValidation.js";
 import { orderSchema } from "../../models/order.models/order.models.js";
 
@@ -14,10 +17,10 @@ orderRouter.post(
   "/order",
   validateSchema(orderSchema),
   postOrderMiddleware,
-  postOrder
+  postOrderController
 );
 
-orderRouter.get("/order", getOrders);
-orderRouter.get("/order/:id",getOrderByIdMiddleware,getOrderById)
+orderRouter.get("/orders", getOrdersController);
+orderRouter.get("/orders/:id", getOrderByIdMiddleware, getOrderByIdController);
 
 export { orderRouter };

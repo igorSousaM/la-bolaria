@@ -1,13 +1,15 @@
 import { connection } from "../../database/db.js";
+import {
+  getFullOrderById,
+  getFullOrders,
+  postOrder,
+} from "../../repositories/orders.repository.js";
 
-export async function postOrder(req, res) {
+export async function postOrderController(req, res) {
   const { clientId, cakeId, quantity, totalPrice } = req.body;
 
   try {
-    await connection.query(
-      'INSERT INTO orders ("clientId", "cakeId", quantity, "totalPrice") VALUES ($1,$2,$3,$4);',
-      [clientId, cakeId, quantity, totalPrice]
-    );
+    await postOrder(clientId, cakeId, quantity, totalPrice);
     res.status(201).send("bolo inserido");
   } catch (err) {
     console.log(err);
@@ -15,23 +17,17 @@ export async function postOrder(req, res) {
   }
 }
 
-export async function getOrders(req, res) {
-  try {
-    const ordersConsult = await connection.query(
-      `SELECT 
-      o.id as "orderId", o.quantity, o."createdAt", o."totalPrice",
-      o."clientId",cl.name as "clientName", cl.address,cl.phone,
-      o."cakeId", ca.name as "cakeName", ca.price, ca.image, ca.description 
-      FROM orders o 
-      JOIN clients cl ON o."clientId"=cl.id 
-      JOIN cakes ca ON ca.id=o."cakeId";`
-    );
+export async function getOrdersController(req, res) {
+  //add query string
 
-    if (ordersConsult.rows.length === 0) {
+  try {
+    const ordersConsult = await getFullOrders();
+
+    if (ordersConsult.length === 0) {
       return res.status(404).send("não tem pedido");
     }
 
-    const orders = ordersConsult.rows.map(i=>organizeOrder(i))
+    const orders = ordersConsult.map((i) => organizeOrder(i));
 
     res.status(200).send(orders);
   } catch (err) {
@@ -40,23 +36,13 @@ export async function getOrders(req, res) {
   }
 }
 
-export async function getOrderById(req, res) {
+export async function getOrderByIdController(req, res) {
   const { id } = req.params;
 
   try {
-    const orderConsult = await connection.query(
-      `SELECT 
-            o.id as "orderId", o.quantity, o."createdAt", o."totalPrice",
-            o."clientId",cl.name as "clientName", cl.address,cl.phone,
-            o."cakeId", ca.name as "cakeName", ca.price, ca.image, ca.description 
-            FROM orders o 
-            JOIN clients cl ON o."clientId"=cl.id 
-            JOIN cakes ca ON ca.id=o."cakeId"
-            WHERE o.id = $1;`,
-      [id]
-    );
+    const orderConsult = await getFullOrderById(id);
 
-    const order = organizeOrder(orderConsult.rows[0]) 
+    const order = organizeOrder(orderConsult);
 
     res.status(200).send(order);
   } catch (err) {
@@ -66,7 +52,6 @@ export async function getOrderById(req, res) {
 }
 
 function organizeOrder(obj) {
-
   const body = {
     client: {
       id: obj.clientId,
@@ -87,5 +72,5 @@ function organizeOrder(obj) {
     totalPrice: obj.totalPrice,
   };
 
-  return body
+  return body;
 }
